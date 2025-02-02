@@ -39,10 +39,10 @@ function createRandomSessions(length: number) {
   for (let i = 0; i < length; i++) {
     sessions.push({
       created_at: new Date().toISOString(),
-      id: Math.random().toString(),
+      id: crypto.getRandomValues(new Uint32Array(1))[0].toString(),
       updated_at: subDays(
         new Date(),
-        Math.floor(Math.random() * 10),
+        Math.floor(crypto.getRandomValues(new Uint32Array(1))[0] / (0xFFFFFFFF + 1) * 10),
       ).toISOString(),
       title: randomLorem(Math.floor(5 + Math.random() * 15)),
     });
