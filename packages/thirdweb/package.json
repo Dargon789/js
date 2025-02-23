@@ -207,7 +207,7 @@
     "!tsconfig.build.json"
   ],
   "dependencies": {
-    "@coinbase/wallet-sdk": "4.2.4",
+    "@coinbase/wallet-sdk": "4.3.0",
     "@emotion/react": "11.14.0",
     "@emotion/styled": "11.14.0",
     "@google/model-viewer": "2.1.1",
@@ -379,7 +379,7 @@
     "typedoc": "0.27.5",
     "typedoc-better-json": "0.9.4",
     "typescript": "5.7.2",
-    "vite": "6.0.3",
-    "vitest": "2.1.8"
+    "vite": "6.0.9",
+    "vitest": "2.1.9"
   }
 }
