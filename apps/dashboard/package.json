@@ -116,7 +116,7 @@
     "@storybook/addon-viewport": "8.6.4",
     "@storybook/blocks": "8.6.4",
     "@storybook/nextjs": "8.6.4",
-    "@storybook/react": "8.6.4",
+    "@storybook/react": "8.6.7",
     "@storybook/test": "8.6.4",
     "@types/color": "4.2.0",
     "@types/node": "22.13.10",
