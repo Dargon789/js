@@ -37,7 +37,7 @@
     "he": "^1.2.0",
     "lucide-react": "0.479.0",
     "next": "15.2.3",
-    "nextjs-toploader": "^1.6.12",
+    "nextjs-toploader": "^3.7.15",
     "node-html-markdown": "^1.3.0",
     "node-html-parser": "^6.1.13",
     "posthog-js": "1.67.1",
