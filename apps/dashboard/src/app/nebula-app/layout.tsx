@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "../../global.css";
+import "./nebula-global.css";
 import { DashboardRouterTopProgressBar } from "@/lib/DashboardRouter";
 import { cn } from "@/lib/utils";
 import { PHProvider } from "lib/posthog/Posthog";
@@ -35,6 +36,7 @@ export default function Layout(props: {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <link rel="icon" href="/assets/nebula/favicon.ico" />
         <PosthogHeadSetup />
       </head>
       <PHProvider>

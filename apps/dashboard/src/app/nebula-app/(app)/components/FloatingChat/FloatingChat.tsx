@@ -16,17 +16,20 @@ import {
   useState,
 } from "react";
 import type { ThirdwebClient } from "thirdweb";
+import type { NebulaContext } from "../../api/chat";
 import type { ExamplePrompt } from "../../data/examplePrompts";
 import { NebulaIcon } from "../../icons/NebulaIcon";
 
 const LazyFloatingChatContent = lazy(() => import("./FloatingChatContent"));
 
-export function NebulaFloatingChatButton(props: {
-  pageType: "chain" | "contract";
+export function NebulaChatButton(props: {
+  pageType: "chain" | "contract" | "support";
   authToken: string | undefined;
   examplePrompts: ExamplePrompt[];
+  networks: NebulaContext["networks"];
   label: string;
   client: ThirdwebClient;
+  isFloating: boolean;
   nebulaParams:
     | {
         messagePrefix: string;
@@ -47,25 +50,30 @@ export function NebulaFloatingChatButton(props: {
 
   return (
     <>
-      {!isOpen && (
-        <div className="fixed right-6 bottom-6 z-50 flex items-center gap-1.5">
-          <Button
-            onClick={() => {
-              setIsOpen(true);
-              setHasBeenOpened(true);
-              trackEvent({
-                category: "floating_nebula",
-                action: "click",
-                label: "open",
-                page: props.pageType,
-              });
-            }}
-            variant="default"
-            className="gap-2 rounded-full"
-          >
-            <NebulaIcon className="size-4" />
-            {props.label}
-          </Button>
+      <div
+        className={cn(
+          "flex items-center gap-1.5",
+          props.isFloating && "fixed right-6 bottom-6 z-50",
+        )}
+      >
+        <Button
+          onClick={() => {
+            setIsOpen(true);
+            setHasBeenOpened(true);
+            trackEvent({
+              category: "floating_nebula",
+              action: "click",
+              label: "open",
+              page: props.pageType,
+            });
+          }}
+          variant="default"
+          className="gap-2 rounded-full"
+        >
+          <NebulaIcon className="size-4" />
+          {props.label}
+        </Button>
+        {props.isFloating && (
           <Button
             variant="outline"
             className="size-10 rounded-full bg-card p-0"
@@ -81,10 +89,11 @@ export function NebulaFloatingChatButton(props: {
           >
             <XIcon className="size-4" />
           </Button>
-        </div>
-      )}
+        )}
+      </div>
 
       <NebulaChatUIContainer
+        networks={props.networks}
         onClose={closeModal}
         isOpen={isOpen}
         hasBeenOpened={hasBeenOpened}
@@ -104,8 +113,9 @@ function NebulaChatUIContainer(props: {
   hasBeenOpened: boolean;
   authToken: string | undefined;
   examplePrompts: ExamplePrompt[];
-  pageType: "chain" | "contract";
+  pageType: "chain" | "contract" | "support";
   client: ThirdwebClient;
+  networks: NebulaContext["networks"];
   nebulaParams:
     | {
         messagePrefix: string;
@@ -181,6 +191,7 @@ function NebulaChatUIContainer(props: {
             }
           >
             <LazyFloatingChatContent
+              networks={props.networks}
               authToken={props.authToken}
               client={props.client}
               nebulaParams={props.nebulaParams}

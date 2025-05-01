@@ -1,5 +1,33 @@
 # thirdweb
 
+## 5.96.6
+
+### Patch Changes
+
+- [#6910](https://github.com/thirdweb-dev/js/pull/6910) [`2dba042`](https://github.com/thirdweb-dev/js/commit/2dba04223456223d554d844fbe77c5f42a8458a0) Thanks [@joaquim-verges](https://github.com/joaquim-verges)! - Improve destination tokens error handling
+
+- [#6906](https://github.com/thirdweb-dev/js/pull/6906) [`c271ec6`](https://github.com/thirdweb-dev/js/commit/c271ec6a4ae607e47cac54b7e310389c1fdf45f2) Thanks [@joaquim-verges](https://github.com/joaquim-verges)! - Updated Wallet Connect to 2.20.1
+
+## 5.96.5
+
+### Patch Changes
+
+- [#6891](https://github.com/thirdweb-dev/js/pull/6891) [`7684b76`](https://github.com/thirdweb-dev/js/commit/7684b768b02e49ff8f9b4a15391ee4eef60c7917) Thanks [@joaquim-verges](https://github.com/joaquim-verges)! - Reword buy with card in PayEmbed
+
+- [#6869](https://github.com/thirdweb-dev/js/pull/6869) [`880650d`](https://github.com/thirdweb-dev/js/commit/880650d148786426b45b6bcd2a881b82008b8c49) Thanks [@kumaryash90](https://github.com/kumaryash90)! - Fix module deployment with refs and zk
+
+- [#6870](https://github.com/thirdweb-dev/js/pull/6870) [`fd91ee8`](https://github.com/thirdweb-dev/js/commit/fd91ee8dfefeafd3d2282009bcf70eee98b9764e) Thanks [@joaquim-verges](https://github.com/joaquim-verges)! - Handle fixed size arrays in solidity inputs
+
+- [#6871](https://github.com/thirdweb-dev/js/pull/6871) [`0aadcd4`](https://github.com/thirdweb-dev/js/commit/0aadcd443455188694dcda35546e57848d6f2cf3) Thanks [@joaquim-verges](https://github.com/joaquim-verges)! - Show injected wallet icon when available
+
+## 5.96.4
+
+### Patch Changes
+
+- [#6849](https://github.com/thirdweb-dev/js/pull/6849) [`e28eb73`](https://github.com/thirdweb-dev/js/commit/e28eb73894f2784b528a95a8cd34f1865362ac12) Thanks [@MananTank](https://github.com/MananTank)! - Signature Screen loading state improvements
+
+- [#6858](https://github.com/thirdweb-dev/js/pull/6858) [`adcbec6`](https://github.com/thirdweb-dev/js/commit/adcbec607f20275cfccac331c4af9a3055ee00bc) Thanks [@mmahdigh](https://github.com/mmahdigh)! - Add name and icon to inAppWallet metadata props to customize in-app wallets inside the connect modal
+
 ## 5.96.3
 
 ### Patch Changes

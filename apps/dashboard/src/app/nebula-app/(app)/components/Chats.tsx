@@ -18,6 +18,7 @@ import type { ThirdwebClient } from "thirdweb";
 import { submitFeedback } from "../api/feedback";
 import { NebulaIcon } from "../icons/NebulaIcon";
 import { ExecuteTransactionCard } from "./ExecuteTransactionCard";
+import { Reasoning } from "./Reasoning/Reasoning";
 
 export type NebulaTxData = {
   chainId: number;
@@ -29,7 +30,11 @@ export type NebulaTxData = {
 export type ChatMessage =
   | {
       text: string;
-      type: "user" | "error" | "presence";
+      type: "user" | "error";
+    }
+  | {
+      texts: string[];
+      type: "presence";
     }
   | {
       // assistant type message loaded from history doesn't have request_id
@@ -140,7 +145,7 @@ export function Chats(props: {
                           )}
                         >
                           {message.type === "presence" && (
-                            <Spinner className="size-4" />
+                            <NebulaIcon className="size-5 text-muted-foreground" />
                           )}
 
                           {message.type === "assistant" && (
@@ -172,15 +177,16 @@ export function Chats(props: {
                               client={props.client}
                               onTxSettled={(txHash) => {
                                 props.sendMessage(
-                                  `I've sent the transaction with hash: ${txHash}.`,
+                                  getTransactionSettledPrompt(txHash),
                                 );
                               }}
                             />
-                          ) : (
-                            <span className="leading-loose">
-                              {message.text}
-                            </span>
-                          )}
+                          ) : message.type === "presence" ? (
+                            <Reasoning
+                              isPending={isMessagePending}
+                              texts={message.texts}
+                            />
+                          ) : null}
                         </ScrollShadow>
 
                         {message.type === "assistant" &&
@@ -207,6 +213,13 @@ export function Chats(props: {
       </ScrollShadow>
     </div>
   );
+}
+
+function getTransactionSettledPrompt(txHash: string) {
+  return `\
+I've executed the following transaction successfully with hash: ${txHash}.
+
+If our conversation calls for it, continue on to the next transaction or suggest next steps`;
 }
 
 function ExecuteTransactionCardWithFallback(props: {
@@ -346,7 +359,7 @@ function StyledMarkdownRenderer(props: {
       p={{
         className:
           props.type === "assistant"
-            ? "text-foreground leading-loose"
+            ? "text-foreground"
             : "text-foreground leading-normal",
       }}
       li={{ className: "text-foreground" }}

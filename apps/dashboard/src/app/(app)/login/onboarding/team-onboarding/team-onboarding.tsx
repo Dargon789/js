@@ -1,6 +1,4 @@
 "use client";
-
-import { getBillingCheckoutUrl } from "@/actions/billing";
 import { apiServerProxy } from "@/actions/proxies";
 import { sendTeamInvites } from "@/actions/sendTeamInvite";
 import type { Team } from "@/api/team";
@@ -96,6 +94,7 @@ export function TeamInfoForm(props: {
 
 export function InviteTeamMembers(props: {
   team: Team;
+  client: ThirdwebClient;
 }) {
   const router = useDashboardRouter();
   const trackEvent = useTrack();
@@ -103,6 +102,7 @@ export function InviteTeamMembers(props: {
   return (
     <InviteTeamMembersUI
       trackEvent={trackEvent}
+      client={props.client}
       onComplete={() => {
         router.replace(`/team/${props.team.slug}`);
       }}
@@ -121,7 +121,6 @@ export function InviteTeamMembers(props: {
         return res.data.result;
       }}
       team={props.team}
-      getBillingCheckoutUrl={getBillingCheckoutUrl}
       inviteTeamMembers={async (params) => {
         const res = await sendTeamInvites({
           teamId: props.team.id,

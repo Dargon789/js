@@ -193,7 +193,7 @@ export function TransactionModeScreen(props: {
                   Insufficient Funds
                 </Text>
                 <Text size="xs" center multiline>
-                  Select another token or pay with a debit card.
+                  Select another token or pay with card.
                 </Text>
               </div>
             )}
@@ -356,6 +356,9 @@ export function TransactionModeScreen(props: {
               client,
               walletAddress: payerAccount.address,
               walletType: activeWallet?.id,
+              toChainId: payUiOptions.transaction.chain.id,
+              toToken: transactionCostAndData.token.address,
+              amountWei: totalCostWei.toString(),
             });
             onContinue(
               toTokens(totalCostWei, transactionCostAndData.decimals),

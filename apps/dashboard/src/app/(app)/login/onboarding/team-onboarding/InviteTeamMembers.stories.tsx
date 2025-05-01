@@ -1,7 +1,7 @@
 import type { Team } from "@/api/team";
 import type { Meta, StoryObj } from "@storybook/react";
 import { teamStub } from "stories/stubs";
-import { storybookLog } from "stories/utils";
+import { storybookLog, storybookThirdwebClient } from "stories/utils";
 import { TeamOnboardingLayout } from "../onboarding-layout";
 import { InviteTeamMembersUI } from "./InviteTeamMembers";
 
@@ -61,6 +61,7 @@ function Story(props: {
   return (
     <TeamOnboardingLayout currentStep={2}>
       <InviteTeamMembersUI
+        client={storybookThirdwebClient}
         trackEvent={(params) => {
           storybookLog("trackEvent", params);
         }}
@@ -70,9 +71,6 @@ function Story(props: {
         team={teamStub("foo", props.plan)}
         inviteTeamMembers={async (params) => {
           return { results: params.map(() => "fulfilled") };
-        }}
-        getBillingCheckoutUrl={async () => {
-          return { status: 200 };
         }}
         onComplete={() => {
           storybookLog("onComplete");

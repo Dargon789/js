@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { trackPayEvent } from "../../../../../../../analytics/track/pay.js";
 import type { Chain } from "../../../../../../../chains/types.js";
 import { getCachedChain } from "../../../../../../../chains/utils.js";
 import type { ThirdwebClient } from "../../../../../../../client/client.js";
@@ -316,7 +317,7 @@ export function SwapScreenContent(props: {
               Insufficient Funds
             </Text>
             <Text size="xs" center multiline>
-              Select another token or pay with a debit card.
+              Select another token or pay with card.
             </Text>
           </div>
         )}
@@ -369,6 +370,18 @@ export function SwapScreenContent(props: {
           onClick={async () => {
             if (!disableContinue) {
               showSwapFlow();
+              trackPayEvent({
+                event: "confirm_swap_quote",
+                client: client,
+                walletAddress: payer.account.address,
+                walletType: payer.wallet.id,
+                chainId: fromChain.id,
+                fromToken: isNativeToken(fromToken)
+                  ? undefined
+                  : fromToken.address,
+                toChainId: toChain.id,
+                toToken: isNativeToken(toToken) ? undefined : toToken.address,
+              });
             }
           }}
           gap="xs"
