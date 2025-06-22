@@ -359,7 +359,7 @@
     "@size-limit/preset-big-lib": "11.2.0",
     "@storybook/addon-essentials": "8.6.12",
     "@storybook/addon-interactions": "8.6.12",
-    "@storybook/addon-links": "8.6.12",
+    "@storybook/addon-links": "9.0.3",
     "@storybook/addon-onboarding": "8.6.12",
     "@storybook/react": "8.6.12",
     "@storybook/react-vite": "8.6.12",
