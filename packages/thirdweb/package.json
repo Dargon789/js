@@ -362,7 +362,7 @@
     "@storybook/addon-links": "9.0.3",
     "@storybook/addon-onboarding": "8.6.12",
     "@storybook/react": "8.6.12",
-    "@storybook/react-vite": "8.6.12",
+    "@storybook/react-vite": "9.0.6",
     "@storybook/test": "8.6.12",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
