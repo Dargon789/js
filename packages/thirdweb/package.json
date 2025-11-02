@@ -75,7 +75,7 @@
     "knip": "5.60.2",
     "msw": "2.7.5",
     "prettier": "3.6.2",
-    "react": "19.1.0",
+    "react": "19.2.0",
     "react-dom": "19.1.0",
     "react-native": "0.78.1",
     "react-native-aes-gcm-crypto": "0.2.2",
