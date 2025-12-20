@@ -1,113 +1,10 @@
 "use server";
 import "server-only";
 
-import { API_SERVER_URL } from "@/constants/env";
-import { getAuthToken } from "../../app/(app)/api/lib/getAuthToken";
-import type { ProductSKU } from "../lib/billing";
-
-export type GetBillingCheckoutUrlOptions = {
-  teamSlug: string;
-  sku: ProductSKU;
-  redirectUrl: string;
-  metadata?: Record<string, string>;
-};
-
-export async function getBillingCheckoutUrl(
-  options: GetBillingCheckoutUrlOptions,
-): Promise<{ status: number; url?: string }> {
-  if (!options.teamSlug) {
-    return {
-      status: 400,
-    };
-  }
-  const token = await getAuthToken();
-
-  if (!token) {
-    return {
-      status: 401,
-    };
-  }
-
-  const res = await fetch(
-    `${API_SERVER_URL}/v1/teams/${options.teamSlug}/checkout/create-link`,
-    {
-      method: "POST",
-      body: JSON.stringify({
-        sku: options.sku,
-        redirectTo: options.redirectUrl,
-        metadata: options.metadata || {},
-      }),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  );
-  if (!res.ok) {
-    return {
-      status: res.status,
-    };
-  }
-
-  const json = await res.json();
-  if (!json.result) {
-    return {
-      status: 500,
-    };
-  }
-
-  return {
-    status: 200,
-    url: json.result as string,
-  };
-}
-
-export type GetBillingCheckoutUrlAction = typeof getBillingCheckoutUrl;
-
-export async function getPlanCancelUrl(options: {
-  teamId: string;
-  redirectUrl: string;
-}): Promise<{ status: number; url?: string }> {
-  const token = await getAuthToken();
-  if (!token) {
-    return {
-      status: 401,
-    };
-  }
-
-  const res = await fetch(
-    `${API_SERVER_URL}/v1/teams/${options.teamId}/checkout/cancel-plan-link`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        redirectTo: options.redirectUrl,
-      }),
-    },
-  );
-
-  if (!res.ok) {
-    return {
-      status: res.status,
-    };
-  }
-
-  const json = await res.json();
-
-  if (!json.result) {
-    return {
-      status: 500,
-    };
-  }
-
-  return {
-    status: 200,
-    url: json.result as string,
-  };
-}
+import { getAuthToken } from "@/api/auth-token";
+import { NEXT_PUBLIC_THIRDWEB_API_HOST } from "@/constants/public-envs";
+import type { ChainInfraSKU } from "@/types/billing";
+import { getAbsoluteUrl } from "@/utils/vercel";
 
 export async function reSubscribePlan(options: {
   teamId: string;
@@ -120,14 +17,17 @@ export async function reSubscribePlan(options: {
   }
 
   const res = await fetch(
-    `${API_SERVER_URL}/v1/teams/${options.teamId}/checkout/resubscribe-plan`,
+    new URL(
+      `/v1/teams/${options.teamId}/checkout/resubscribe-plan`,
+      NEXT_PUBLIC_THIRDWEB_API_HOST,
+    ),
     {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
       body: JSON.stringify({}),
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      method: "PUT",
     },
   );
 
@@ -141,58 +41,95 @@ export async function reSubscribePlan(options: {
     status: 200,
   };
 }
-export type GetBillingPortalUrlOptions = {
-  teamSlug: string | undefined;
-  redirectUrl: string;
-};
 
-export async function getBillingPortalUrl(
-  options: GetBillingPortalUrlOptions,
-): Promise<{ status: number; url?: string }> {
-  if (!options.teamSlug) {
-    return {
-      status: 400,
-    };
-  }
+export async function getChainInfraCheckoutURL(options: {
+  teamSlug: string;
+  skus: ChainInfraSKU[];
+  chainId: number;
+  annual: boolean;
+}) {
   const token = await getAuthToken();
+
   if (!token) {
     return {
-      status: 401,
-    };
+      error: "You are not logged in",
+      status: "error",
+    } as const;
   }
 
   const res = await fetch(
-    `${API_SERVER_URL}/v1/teams/${options.teamSlug}/checkout/create-session-link`,
+    new URL(
+      `/v1/teams/${options.teamSlug}/checkout/create-link`,
+      NEXT_PUBLIC_THIRDWEB_API_HOST,
+    ),
     {
-      method: "POST",
       body: JSON.stringify({
-        redirectTo: options.redirectUrl,
+        annual: options.annual,
+        baseUrl: getAbsoluteUrl(),
+        chainId: options.chainId,
+        skus: options.skus,
       }),
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
+      method: "POST",
     },
   );
-
   if (!res.ok) {
-    return {
-      status: res.status,
-    };
+    const text = await res.text();
+    console.error("Failed to create checkout link", text, res.status);
+    switch (res.status) {
+      case 402: {
+        return {
+          error:
+            "You have outstanding invoices, please pay these first before re-subscribing.",
+          status: "error",
+        } as const;
+      }
+      case 429: {
+        return {
+          error: "Too many requests, please try again later.",
+          status: "error",
+        } as const;
+      }
+      case 403: {
+        return {
+          error: "You are not authorized to deploy infrastructure.",
+          status: "error",
+        } as const;
+      }
+      default: {
+        return {
+          error: "An unknown error occurred, please try again later.",
+          status: "error",
+        } as const;
+      }
+    }
   }
 
   const json = await res.json();
 
+  if (
+    "error" in json &&
+    "message" in json.error &&
+    typeof json.error.message === "string"
+  ) {
+    return {
+      error: json.error.message,
+      status: "error",
+    } as const;
+  }
+
   if (!json.result) {
     return {
-      status: 500,
-    };
+      error: "An unknown error occurred, please try again later.",
+      status: "error",
+    } as const;
   }
 
   return {
-    status: 200,
-    url: json.result as string,
-  };
+    data: json.result as string,
+    status: "success",
+  } as const;
 }
-
-export type GetBillingPortalUrlAction = typeof getBillingPortalUrl;
