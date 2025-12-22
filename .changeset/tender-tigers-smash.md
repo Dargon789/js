@@ -2,4 +2,4 @@
 "thirdweb-dashboard": patch
 ---
 
-Dargon789 patch 1
+feat: Add initial CircleCI configuration and SECURITY.md
