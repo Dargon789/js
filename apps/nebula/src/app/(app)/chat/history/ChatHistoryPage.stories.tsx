@@ -34,17 +34,17 @@ export const Mobile: Story = {
   },
 };
 
-function getRandomInt(maxExclusive: number): number {
-  if (maxExclusive <= 0) {
-    throw new Error("maxExclusive must be positive");
+function getRandomInt(max: number): number {
+  if (max <= 0) {
+    throw new Error("max must be positive");
   }
-  const range = 0xFFFFFFFF + 1; // 2^32
-  const maxUnbiased = range - (range % maxExclusive);
-
+  const maxUint32 = 0xffffffff;
+  const limit = maxUint32 - (maxUint32 % max);
+  // Rejection sampling to avoid modulo bias
   while (true) {
-    const rand = crypto.getRandomValues(new Uint32Array(1))[0];
-    if (rand < maxUnbiased) {
-      title: randomLorem(Math.floor(5 + (crypto.getRandomValues(new Uint32Array(1))[0] / (0xFFFFFFFF + 1)) * 15)),
+    const value = crypto.getRandomValues(new Uint32Array(1))[0];
+    if (value < limit) {
+      return value % max;
     }
   }
 }
