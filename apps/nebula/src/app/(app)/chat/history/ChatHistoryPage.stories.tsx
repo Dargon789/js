@@ -44,7 +44,7 @@ function getRandomInt(maxExclusive: number): number {
   while (true) {
     const rand = crypto.getRandomValues(new Uint32Array(1))[0];
     if (rand < maxUnbiased) {
-      return rand % maxExclusive;
+      title: randomLorem(Math.floor(5 + (crypto.getRandomValues(new Uint32Array(1))[0] / (0xFFFFFFFF + 1)) * 15)),
     }
   }
 }
