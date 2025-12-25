@@ -34,6 +34,21 @@ export const Mobile: Story = {
   },
 };
 
+function getRandomInt(maxExclusive: number): number {
+  if (maxExclusive <= 0) {
+    throw new Error("maxExclusive must be positive");
+  }
+  const range = 0xFFFFFFFF + 1; // 2^32
+  const maxUnbiased = range - (range % maxExclusive);
+
+  while (true) {
+    const rand = crypto.getRandomValues(new Uint32Array(1))[0];
+    if (rand < maxUnbiased) {
+      return rand % maxExclusive;
+    }
+  }
+}
+
 function createRandomSessions(length: number) {
   const sessions = [];
   for (let i = 0; i < length; i++) {
@@ -42,7 +57,7 @@ function createRandomSessions(length: number) {
       id: crypto.getRandomValues(new Uint32Array(1))[0].toString(),
       updated_at: subDays(
         new Date(),
-        Math.floor(crypto.getRandomValues(new Uint32Array(1))[0] / (0xFFFFFFFF + 1) * 10),
+        getRandomInt(10),
       ).toISOString(),
       title: randomLorem(Math.floor(5 + Math.random() * 15)),
     });
